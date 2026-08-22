@@ -1,0 +1,33 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.granica.ai/
+plan_count: 0
+public_pricing: false
+probed:
+- url: https://www.granica.ai/pricing
+  status: 404
+- url: https://www.granica.ai/
+  status: 200
+- url: https://www.granica.ai/book-demo
+  status: 200
+- url: https://docs.granica.ai/getting-started/start-a-pilot
+  status: 200
+plans: []
+note: >-
+  Granica publishes no pricing page and no plan tiers. There is no /pricing route on the marketing site
+  (404), and no pricing section on the homepage, the Crunch product page or the docs. The only commercial
+  entry points are "Book a Demo" (https://www.granica.ai/book-demo) and a proof-of-value "Start a Crunch
+  pilot" flow in the docs, both of which route to sales - sales@granica.ai is the contact named throughout
+  the FAQ. This is an enterprise contact-us motion, recorded as an honest zero rather than omitted.
+commercial_signals:
+- signal: cost-model configuration in-product
+  detail: >-
+    The Configure Crunch admin page exposes a Cloud Storage Base Rate ($/TB/month, defaulting to AWS S3
+    Standard pricing), a Cloud Discount (%) for negotiated AWS EDP / GCP CUD rates, a Projection Period and a
+    heuristic Operational Cost ($/PB). These describe how Granica computes the CUSTOMER's cloud savings, not
+    what Granica charges.
+  source: https://docs.granica.ai/administration/configure-crunch
+- signal: compute cost bearer varies by deployment model
+  detail: In the Granica Hosted model, "Crunch compute cost borne by Granica"; in On-Premises the customer bears infrastructure cost.
+  source: https://docs.granica.ai/installation/deployment-models
+sales_contact: sales@granica.ai

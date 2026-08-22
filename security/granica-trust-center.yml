@@ -1,0 +1,49 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/security-and-compliance/security-certifications
+note: >-
+  Granica publishes no separate trust.granica.ai portal. Its compliance disclosure lives in the public
+  documentation, on the Security certifications page, which names specific attestations and the process for
+  requesting the reports. That page is the trust surface and is what this artifact points at.
+trust_center_url: https://docs.granica.ai/security-and-compliance/security-certifications
+dedicated_portal: false
+certifications:
+- name: SOC 2 Type 1
+  status: current
+  auditor: independent CBA-registered CPA firm
+  evidence: 'Listed under "Current" on the security certifications page.'
+  report_availability: >-
+    Restricted. Shared only with prospective customers under NDA or current customers bound by
+    confidentiality agreements. Requested from security@granica.ai with company name, requestor name, email
+    and job title; acknowledgement within one business day.
+- name: SOC 2 Type 2
+  status: current
+  auditor: independent CBA-registered CPA firm
+  evidence: 'Listed under "Current" on the security certifications page.'
+  report_availability: Same restricted NDA process as the Type 1 report.
+- name: ISO/IEC 27001
+  status: planned
+  evidence: 'Listed under "Planned (Roadmap)".'
+regimes:
+- name: HIPAA
+  posture: conditional / architecture-compatible
+  statement: >-
+    Granica does not directly handle protected health information. Data stays within the customer's own
+    HIPAA-compliant cloud environment, Granica relies on the cloud provider's native encryption at rest and
+    in transit, the control plane runs within the customer's VPC, and data isolation follows the customer's
+    per-tenant bucket layout. Granica states it "can be part of an overall HIPAA-compliant architecture"
+    rather than claiming certification.
+contacts:
+- purpose: security and compliance report requests
+  email: security@granica.ai
+data_residency:
+  models:
+  - name: Granica Hosted
+    data_leaves_customer_cloud: table data and catalog metadata
+  - name: On-Premises (2A, with tunnel)
+    data_leaves_customer_cloud: Console HTML, aggregated reports and metrics, table names and metadata, policies, activity stats, configuration
+  - name: On-Premises (2B, without tunnel)
+    data_leaves_customer_cloud: none
+  - name: Hybrid
+    data_leaves_customer_cloud: Spark job progress, job status, failures and performance metrics
+  source: https://docs.granica.ai/installation/deployment-models

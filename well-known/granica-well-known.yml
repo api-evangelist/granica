@@ -1,0 +1,55 @@
+generated: '2026-08-22'
+method: probed
+source: direct HTTPS probe of every host in apis.yml on 2026-08-22
+note: >-
+  Every /.well-known/ path 404s on both the marketing host and the documentation host. The 404s are real
+  application 404s (Next.js error shells), not SPA catch-alls returning 200. No WellKnown or SecurityTxt
+  pointer is emitted in apis.yml, because this file records an absence, not a presence. The Granica API
+  itself runs on a customer-deployed Console host, so no Granica-controlled API host exists to probe.
+hosts:
+- host: www.granica.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: docs.granica.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null

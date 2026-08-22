@@ -1,0 +1,61 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/api-reference
+api: Granica APIs V1
+format: fastapi-detail
+rfc9457: false
+note: >-
+  Granica publishes no OpenAPI file on a public host, so this catalog is read from the published REST API
+  reference rather than derived from 4xx/5xx response objects. The envelope is the FastAPI convention - a
+  JSON body with a `detail` member - not application/problem+json, and the docs state plainly that "422
+  indicates a validation error with detail in the response body". No numeric or symbolic error-code registry
+  is published; the status code plus the detail string is the whole contract.
+envelope:
+  media_type: application/json
+  field: detail
+  example_shape: '{"detail": "<validation or error description>"}'
+  documented_at: https://docs.granica.ai/api-reference
+status_codes:
+- status: 200
+  meaning: Success. Also used as "already enabled - no-op" on POST /object-maintenance/locations/{location_id}/prefixes/{prefix_id}/enable.
+  retryable: false
+- status: 201
+  meaning: Resource created (table created, prefix newly enabled).
+  retryable: false
+- status: 204
+  meaning: Deleted. Returned by DELETE /tables/{table_id} and DELETE /tables/{table_id}/schedule.
+  retryable: false
+- status: 404
+  meaning: Resource not found - e.g. prefix or location not found on the enable-maintenance call.
+  remediation: Verify the identifier; use GET /api/v1/tables?name=<name> to resolve a table ID from its unique name.
+  retryable: false
+- status: 409
+  meaning: >-
+    Conflict on POST /api/v1/tables when a table with that unique name already exists. The docs direct callers
+    to resolve the existing table's ID with the name query filter on GET /api/v1/tables after a 409.
+  remediation: GET /api/v1/tables?name=<name> to resolve the existing table ID, then update instead of creating.
+  retryable: false
+- status: 422
+  meaning: >-
+    Validation error. The canonical Granica error - returned for malformed bodies, invalid lifecycle
+    transitions (enable maintenance on a prefix in an incompatible state), and state-precondition failures
+    (retrying an Optimus submission whose effective status is not `failed`).
+  remediation: Read the `detail` member of the response body; it names the failing field or precondition.
+  retryable: false
+documented_conditions:
+- operation: POST /api/v1/onboarding/{table_id}/retry
+  condition: Only tables with onboarding_status='failed' can be retried.
+- operation: POST /api/v1/optimus/runs/{submission_id}/retry
+  condition: Returns 422 unless the effective status is failed.
+- operation: POST /api/v1/tables/{table_id}/schedule
+  condition: Only works when onboarding_status is active.
+- operation: POST /api/v1/pending-deletions/{deletion_id}/recover
+  condition: Only PENDING_DELETE records can be recovered.
+- operation: DELETE /api/v1/catalog-connections/{connection_id}
+  condition: The confirm query parameter must be true to proceed; deletion is irreversible.
+- operation: POST /api/v1/object-maintenance/locations/{location_id}/prefixes/{prefix_id}/enable
+  condition: 422 on an invalid lifecycle transition; 200 (no-op) when the prefix is already active.
+gaps:
+- No published error-code registry (no symbolic or numeric codes).
+- No RFC 9457 application/problem+json media type.
+- No documented retry-after or backoff signalling.

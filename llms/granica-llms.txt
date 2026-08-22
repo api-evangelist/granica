@@ -1,0 +1,26 @@
+# Documentation
+
+- [Granica APIs V1](/api-reference): REST API reference for the Granica platform — tables, schedules, crunch, vacuum, catalog connections, Optimus, object maintenance, and more.
+- [Tour of the Granica Console](/): A guided tour of the Granica Console's two primary workspaces — Table Maintenance for catalog-registered tables, and Object Maintenance for raw object store prefixes.
+- [Configure Crunch](/administration/configure-crunch): System-wide platform settings that control how Granica Crunch operates, calculates savings, and communicates with your team.
+- [Connect Catalogs](/administration/connect-catalogs): Connect your data catalogs to Granica to discover, onboard, and manage tables for automated optimization.
+- [Connect Object Stores](/administration/connect-object-stores): Register S3, GCS, or Azure prefixes so Granica can discover and optimize objects that live outside your data catalogs.
+- [Connect Query History](/administration/connect-query-history): Set up daily query history ingestion from Trino, Spark, and Athena to power Query Acceleration recommendations.
+- [Manage Users](/administration/manage-users): Add, edit, and manage user accounts and roles in the Granica Console.
+- [Monitoring Platform](/administration/monitoring-platform): Overview of the dashboards and reports available in the Granica Console for tracking optimization activity, platform health, and cost savings.
+- [Use Platform Tools](/administration/use-platform-tools): Access the Granica API explorer, Grafana dashboards, Airflow DAG scheduler, and Spark History Server directly from the Granica Console.
+- [Architecture](/crunch/architecture): Understand the Granica Crunch platform architecture, deployment models, and the separation between control plane and data plane.
+- [Crunch compatibility](/crunch/compatibility): Supported platforms and file formats for Granica Crunch.
+- [How crunching works](/crunch/how-it-works): Understand how Crunch optimizes compression for your lakehouse data.
+- [Granica Crunch overview](/crunch/overview): A continuous, policy-driven data lakehouse optimization platform for compaction, compression, vacuuming, partition lifecycle management, and query acceleration.
+- [Granica Crunch FAQ](/faq): Frequently asked questions about the Granica Crunch.
+- [Get started](/getting-started/get-started): Step-by-step guides for Administrators and Users getting started with Granica Crunch.
+- [Start a Crunch pilot](/getting-started/start-a-pilot): Experience the savings potential of Crunch using a sample of your data.
+- [AWS](/installation/aws): Set up and deploy a Granica Admin Server on AWS using Terraform.
+- [Azure](/installation/azure): undefined
+- [Deployment Models](/installation/deployment-models): Understand the three deployment models Granica supports and what data flows out of your cloud environment in each.
+- [GCP](/installation/gcp): Set up and deploy a Granica Admin Server on Google Cloud Platform using Terraform.
+- [API Keys](/security-and-compliance/api-token): Create and manage API keys for machine-to-machine access to the Granica API.
+- [Role-Based Access Control](/security-and-compliance/role-based-access-control): Manage who can view, configure, and administer your Granica deployment using role-based access control.
+- [Security certifications](/security-and-compliance/security-certifications): Learn about Granica's commitment to information security and compliance.
+- [SSO Integration](/security-and-compliance/sso-integration): Configure Single Sign-On (SSO) for the Granica platform using OIDC or SAML 2.0.

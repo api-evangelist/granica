@@ -1,0 +1,93 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/security-and-compliance/api-token
+docs:
+- https://docs.granica.ai/security-and-compliance/api-token
+- https://docs.granica.ai/security-and-compliance/sso-integration
+- https://docs.granica.ai/security-and-compliance/role-based-access-control
+- https://docs.granica.ai/administration/use-platform-tools
+note: >-
+  Derived from the published docs rather than a securityScheme block - Granica does not publish an OpenAPI
+  file on a public host (the FastAPI /openapi.json is served only from the customer's own deployed Granica
+  Console, admin-only, at /granica-api/openapi.json).
+api: Granica APIs V1
+base_path: /api/v1
+schemes:
+- id: api_key_bearer
+  type: http
+  scheme: bearer
+  in: header
+  header: Authorization
+  format: 'Authorization: Bearer <your-api-key>'
+  description: >-
+    Long-lived bearer API key for machine-to-machine access to the Granica REST API without a user session.
+    Keys are created under Settings > API Keys in the Granica Console and are Admin-role only. The full key
+    value is displayed exactly once at creation and cannot be retrieved afterwards.
+  scoped: true
+  scopes_artifact: scopes/granica-scopes.yml
+  expiration:
+    configurable: true
+    range_days:
+      min: 1
+      max: 365
+    never_expires_allowed: true
+    behavior: Keys become inactive after their expiration date and can no longer authenticate requests.
+  default_when_unscoped: >-
+    If no access policy is selected at creation the key is granted full access to all API endpoints.
+- id: console_session_oidc
+  type: openIdConnect
+  applies_to: Granica Console (human users), not the M2M API
+  description: >-
+    Single Sign-On via OpenID Connect. Granica acts as a confidential OIDC client using the Authorization
+    Code flow; configuration requires a discovery URL (.well-known/openid-configuration), client ID and
+    client secret.
+  identity_providers:
+  - Okta
+  - Microsoft Entra ID
+  - Google Workspace
+  - Auth0
+  - AWS IAM Identity Center
+  - Keycloak
+  - Any OpenID Connect Core 1.0 compliant provider
+- id: console_session_saml
+  type: saml2
+  applies_to: Granica Console (human users), not the M2M API
+  description: >-
+    SAML 2.0 SSO with Granica acting as the Service Provider. Configuration imports IdP metadata by URL or
+    XML and registers Granica's SP metadata (Entity ID, ACS URL, SLO URL, SP certificate) with the IdP.
+    Granica signs outbound requests by default.
+  identity_providers:
+  - Okta
+  - Microsoft Entra ID
+  - Google Workspace (assertion encryption not supported)
+  - Auth0
+  - AWS IAM Identity Center (users must be pre-provisioned; SCIM auto-provisioning not supported)
+  - Any SAML 2.0 compliant provider
+  enforcement_modes:
+  - disabled
+  - test
+  - enforced
+  break_glass: >-
+    Designated break-glass users can always log in with local credentials even when SSO is enforced or the
+    IdP is unavailable. Configured under Settings > SSO before enforcement.
+sessions:
+  token_type: JWT
+  access_token_ttl_seconds:
+    default: 3600
+    range: [900, 28800]
+  refresh_token_ttl_seconds:
+    sso_users_default: 7200
+    range: [3600, 28800]
+  propagation: Changes apply to newly issued tokens within 60 seconds.
+  source: https://docs.granica.ai/administration/configure-crunch
+rbac:
+  roles:
+  - Admin
+  - Editor
+  - Viewer
+  enforcement:
+  - GET (read) requests are available to all authenticated users.
+  - POST, PUT, PATCH and DELETE (write) requests are restricted to Editors and Admins.
+  - The /docs, /redoc and /openapi.json API documentation UI is Admin-only.
+  - API-key scopes are enforced in addition to role - a key with only tables:read cannot trigger a crunch job.
+  source: https://docs.granica.ai/security-and-compliance/role-based-access-control

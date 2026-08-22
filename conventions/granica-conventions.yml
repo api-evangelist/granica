@@ -1,0 +1,182 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/api-reference
+docs:
+- https://docs.granica.ai/api-reference
+- https://docs.granica.ai/security-and-compliance/api-token
+- https://docs.granica.ai/administration/use-platform-tools
+api: Granica APIs V1
+note: >-
+  Read from the published REST API reference. Granica publishes no OpenAPI file on a public host, so nothing
+  here is derived from a spec; every statement below traces to a sentence or a parameter table on the docs
+  pages listed in `docs`.
+authentication:
+  style: bearer-api-key
+  header: 'Authorization: Bearer <your-api-key>'
+  artifact: authentication/granica-authentication.yml
+base_path: /api/v1
+host_model: >-
+  Customer-deployed. The API is served by the Granica Console / Admin Server running in the customer's own
+  cloud account (or Granica's, in the Granica Hosted model), so there is no single vendor-operated base host.
+versioning:
+  style: uri-path
+  current: v1
+  path_prefix: /api/v1
+  artifact: lifecycle/granica-lifecycle.yml
+pagination:
+  style: offset-limit
+  params:
+  - name: offset
+    in: query
+    default: 0
+  - name: limit
+    in: query
+    defaults:
+      most_collections: 100
+      inventory_history: 50
+      pending_deletions: 20
+      vacuum_hard_delete: 500
+    caps:
+      vacuum_hard_delete: 5000
+  response_fields: not documented
+filtering:
+  common_params:
+  - status
+  - table_id
+  - job_type
+  - name
+  - is_active
+  note: >-
+    GET /api/v1/tables supports `name` for exact-match lookup and the docs name it as the way to resolve a
+    table's ID after a 409 on POST /tables. Catalog table listing adds catalog, schema, prefix, search,
+    format, table_type, min_size_bytes, max_size_bytes, has_partitions, sort_by and sort_order.
+sorting:
+  params:
+  - sort_by (default full_name)
+  - sort_order (asc | desc, default asc)
+  scope: GET /api/v1/catalog-connections/{connection_id}/tables
+metadata: not documented
+request_id_tracing: not documented
+error_envelope:
+  field: detail
+  media_type: application/json
+  rfc9457: false
+  artifact: errors/granica-problem-types.yml
+rate_limit_signaling:
+  documented: false
+  artifact: rate-limits/granica-rate-limits.yml
+idempotency:
+  header: none
+  idempotency_key_support: false
+  documented_idempotent_operations:
+  - operation: POST /api/v1/object-maintenance/locations/{location_id}/prefixes/{prefix_id}/enable
+    note: 'Explicitly documented as "Idempotent on already-active prefixes" - returns 200 no-op instead of 201.'
+  - operation: PUT /api/v1/object-maintenance/prefixes/{prefix_id}/policy
+    note: >-
+      Upsert - creates or replaces the active policy, appending a new version and deactivating the prior one
+      atomically. Safe to repeat, but each repeat appends a version.
+  grade: partial
+  note: >-
+    Granica ships NO client-supplied idempotency key. Two operations are documented as idempotent by
+    construction, and PUT-based updates are naturally idempotent, but a repeated POST /api/v1/tables returns
+    409 rather than the original resource and a repeated POST .../crunch fires a second job. An agent cannot
+    safely retry a mutating POST on an ambiguous network failure. No Idempotency pointer is emitted in
+    apis.yml, because there is no idempotency mechanism to point at.
+dry_run_mode:
+  supported: true
+  grade: verified
+  surfaces:
+  - operation: POST /api/v1/vacuum/hard-delete
+    mechanism: dry_run query parameter, default false
+    effect: Preview the hard delete without deleting.
+  - operation: POST /api/v1/tables/{table_id}/partition-expiration/validate
+    mechanism: dedicated preflight endpoint
+    effect: 'Preflight a partition expiration policy before persisting. Documented as "side-effect-free - no DB writes".'
+  - operation: POST /api/v1/catalog-connections/test
+    mechanism: dedicated test endpoint
+    effect: Test a catalog connection without persisting; validates credentials by listing catalogs.
+reversibility:
+  grade: documented
+  applicable: true
+  note: >-
+    Granica publishes real reversal paths for its most destructive operations, but does not state the window
+    in which any of them works, so this grades `documented` rather than `verified`. The recovery window for a
+    pending deletion is governed by the customer's own vacuum retention policy, which is configurable and
+    therefore never stated as a number in the docs. No window is asserted here that the docs do not state.
+  write_surfaces:
+  - operation: POST /api/v1/vacuum/hard-delete
+    action: Physically delete files for expired PENDING_DELETE records.
+    reversal: none once executed
+    mitigation: >-
+      Files are first tombstoned into PENDING_DELETE and can be recovered with
+      POST /api/v1/pending-deletions/{deletion_id}/recover until they expire and are hard-deleted. A dry_run
+      preview is available before executing.
+    window: not stated - governed by the customer's configured vacuum retention policy
+    docs: https://docs.granica.ai/api-reference
+  - operation: POST /api/v1/pending-deletions/{deletion_id}/recover
+    action: Recover a pending deletion to prevent hard-delete.
+    reversal: this IS the reversal operation
+    constraint: Only PENDING_DELETE records can be recovered.
+    window: not stated
+    docs: https://docs.granica.ai/api-reference
+  - operation: POST /api/v1/tables/{table_id}/crunch
+    action: Trigger a crunch job.
+    reversal: POST /api/v1/crunch/{crunch_id}/cancel
+    note: Cancels a scheduled or in-flight crunch job. Work already committed is not rolled back.
+    window: 'while scheduled or in flight'
+    docs: https://docs.granica.ai/api-reference
+  - operation: POST /api/v1/tables/{table_id}/partition-expiration
+    action: Expire partitions (DELETE-only) on a Delta table.
+    reversal: none directly
+    mitigation: >-
+      Files are tombstoned in the table log rather than removed; physical reclamation is handled later by the
+      vacuum pipeline, and Delta time travel remains available until vacuum runs. Policy can be preflighted
+      with .../partition-expiration/validate.
+    window: not stated
+    docs: https://docs.granica.ai/api-reference
+  - operation: PUT /api/v1/object-maintenance/prefixes/{prefix_id}/policy
+    action: Create or replace the active prefix policy.
+    reversal: >-
+      No revert endpoint, but full version history is retained and readable at
+      GET /api/v1/object-maintenance/prefixes/{prefix_id}/policy/versions; a prior version can be re-applied
+      by upserting it again.
+    window: full history retained, newest-first
+    docs: https://docs.granica.ai/api-reference
+  - operation: DELETE /api/v1/catalog-connections/{connection_id}
+    action: Delete a catalog connection and all its synced metadata.
+    reversal: none
+    note: 'Docs state explicitly: "Must be true to proceed. Deletion is irreversible." A confirm=true query parameter is required.'
+    window: none
+    docs: https://docs.granica.ai/api-reference
+  - operation: DELETE /api/v1/object-maintenance/locations/{location_id}
+    action: Delete an object maintenance location.
+    reversal: none
+    note: Dependent prefixes are retained with location_id = NULL so history is preserved.
+    window: none
+    docs: https://docs.granica.ai/api-reference
+  - operation: DELETE /api/v1/optimus/runs/{submission_id}
+    action: Hard-delete an Optimus submission.
+    reversal: none
+    note: Cascades to runs, recommendations, and per-day predicate combos.
+    window: none
+    docs: https://docs.granica.ai/api-reference
+  - operation: POST /api/v1/object-maintenance/discovery/schedules/{schedule_id}/pause
+    action: Pause a running discovery.
+    reversal: POST .../resume, or .../restart to start over
+    window: while running
+    docs: https://docs.granica.ai/api-reference
+  - operation: DELETE /api/v1/tables/{table_id}
+    action: Delete a table and its schedules.
+    reversal: none - re-onboarding is a fresh POST /api/v1/tables
+    note: >-
+      Inventory history rows are retained after the table is deleted, so
+      GET /api/v1/tables/{table_id}/inventory-history may still return audit history for removed tables.
+    window: none
+    docs: https://docs.granica.ai/api-reference
+safety_notes:
+- >-
+  The docs themselves warn that mutating operations through the in-console API explorer "execute immediately
+  against your live data. There is no undo."
+- >-
+  Write operations (POST/PUT/PATCH/DELETE) are restricted to Editors and Admins, and API-key scopes are
+  enforced on top of role.

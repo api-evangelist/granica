@@ -1,0 +1,81 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/security-and-compliance/api-token
+docs: https://docs.granica.ai/security-and-compliance/api-token
+api: Granica APIs V1
+note: >-
+  These are NOT OAuth 2.0 scopes. Granica calls them "Access Policies" and "Scope keys" - they are attached
+  to a long-lived bearer API key at creation time and enforced on every request in addition to the caller's
+  RBAC role. They are recorded here because they are the provider's own published, named permission surface
+  and read exactly like scopes. Granica does not run an OAuth authorization server; the only OAuth/OIDC in
+  the product is inbound Console SSO against the customer's own identity provider.
+model: api-key-access-policy
+default_when_none_selected: full access to all API endpoints
+groups:
+- id: table_discovery_onboarding
+  name: Table Discovery & Onboarding
+  scopes:
+  - key: tables:read
+    description: List tables, view schema, partitions, and size metrics.
+  - key: tables:write
+    description: Onboard, update, and remove tables.
+  - key: catalog_connections:read
+    description: List connections, browse catalogs, schemas, and discovered tables.
+  - key: catalog_connections:write
+    description: Create, update, delete connections and trigger syncs.
+  - key: onboarding:read
+    description: Check progress of table onboarding workflows.
+  - key: onboarding:write
+    description: Retry onboarding tasks that have failed.
+- id: crunch_file_optimization
+  name: Crunch - File Optimization
+  scopes:
+  - key: crunch:read
+    description: View job status, execution history, compression metrics.
+  - key: crunch:write
+    description: Run on-demand crunch jobs.
+  - key: crunch_policy:read
+    description: View which primitives are enabled and their configuration.
+  - key: crunch_policy:write
+    description: Enable/disable and configure Compression, Compaction, Sorting, Clustering, and Deduplication.
+  - key: schedules:read
+    description: View automated crunch schedules.
+  - key: schedules:write
+    description: Create, update, and delete crunch schedules.
+- id: vacuum
+  name: Vacuum
+  scopes:
+  - key: vacuum:read
+    description: View vacuum job status and cleanup metrics.
+  - key: vacuum:write
+    description: Run on-demand vacuum to expire snapshots and delete orphaned files.
+  - key: vacuum_policy:read
+    description: View retention settings and vacuum policy configuration.
+  - key: vacuum_policy:write
+    description: Update vacuum retention policy.
+- id: partition_expiration
+  name: Partition Expiration
+  scopes:
+  - key: partition_exp_policy:read
+    description: View partition retention rules.
+  - key: partition_exp_policy:write
+    description: Create and update partition expiration policies.
+- id: platform_administration
+  name: Platform Administration
+  scopes:
+  - key: config:read
+    description: Read platform configuration and health status.
+  - key: config:write
+    description: Modify platform-level configuration settings.
+presets:
+- name: Read Only
+  description: >-
+    View everything across all groups - tables, crunch jobs, vacuum history, schedules, policies, and config.
+    No write access.
+- name: Full Maintenance
+  description: >-
+    Complete table maintenance - crunch, vacuum, partition expiration, and schedule management. Excludes
+    catalog management and platform admin.
+- name: Vacuum Only
+  description: Snapshot expiration and orphan file cleanup - vacuum read, write, and policy scopes only.
+scope_count: 20

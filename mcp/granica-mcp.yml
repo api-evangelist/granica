@@ -1,0 +1,83 @@
+generated: '2026-08-22'
+method: derived
+source: https://docs.granica.ai/api-reference
+status: candidate
+note: >-
+  Granica publishes NO MCP server. Searched the docs (docs.granica.ai/llms.txt lists 24 pages and names no
+  MCP surface), the marketing site, both GitHub organizations (granica-ai, project-n-oss), and the web; and
+  probed https://mcp.granica.ai/mcp (DNS does not resolve), https://docs.granica.ai/mcp (404) and
+  https://www.granica.ai/mcp (404). The tools below are a CANDIDATE mapping derived by API Evangelist from
+  the published REST reference - they are not shipped by Granica and no MCPServer pointer is emitted in
+  apis.yml. No tool crosswalk is written either, because there is neither an MCP server nor a public OpenAPI
+  to bind operations against.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: searched
+probes:
+- url: https://mcp.granica.ai/mcp
+  status: 0
+  result: DNS does not resolve
+- url: https://docs.granica.ai/mcp
+  status: 404
+- url: https://www.granica.ai/mcp
+  status: 404
+- url: https://docs.granica.ai/llms.txt
+  status: 200
+  result: 200 - no MCP surface listed among the 24 documented pages
+candidate_tools:
+- name: list_tables
+  rest: GET /api/v1/tables
+  description: List Granica-managed tables with their schedules, filterable by status and name.
+  scope: tables:read
+- name: create_table
+  rest: POST /api/v1/tables
+  description: Register a table for Crunch onboarding.
+  scope: tables:write
+  consequence: write
+- name: get_table
+  rest: GET /api/v1/tables/{table_id}
+  description: Get a table by ID, including its schedule.
+  scope: tables:read
+- name: trigger_crunch
+  rest: POST /api/v1/tables/{table_id}/crunch
+  description: Trigger a crunch job directly, bypassing the schedule, in lookback or backfill mode.
+  scope: crunch:write
+  consequence: write
+  reversal: POST /api/v1/crunch/{crunch_id}/cancel
+- name: get_crunch_metrics
+  rest: GET /api/v1/crunch/{crunch_id}/metrics
+  description: Get a crunch job with aggregated metrics including data reduction rate and bytes before/after.
+  scope: crunch:read
+- name: cancel_crunch
+  rest: POST /api/v1/crunch/{crunch_id}/cancel
+  description: Cancel a scheduled or in-flight crunch job.
+  scope: crunch:write
+- name: trigger_vacuum
+  rest: POST /api/v1/tables/{table_id}/vacuum
+  description: Trigger a vacuum operation on a Delta or Iceberg table.
+  scope: vacuum:write
+  consequence: destructive
+- name: preview_hard_delete
+  rest: POST /api/v1/vacuum/hard-delete?dry_run=true
+  description: Preview which expired pending-delete records would be hard-deleted, without deleting.
+  scope: vacuum:read
+- name: recover_pending_deletion
+  rest: POST /api/v1/pending-deletions/{deletion_id}/recover
+  description: Recover a pending deletion to prevent hard-delete.
+  scope: vacuum:write
+- name: validate_partition_expiration
+  rest: POST /api/v1/tables/{table_id}/partition-expiration/validate
+  description: Preflight a partition expiration policy without persisting anything.
+  scope: partition_exp_policy:read
+- name: list_catalog_tables
+  rest: GET /api/v1/catalog-connections/{connection_id}/tables
+  description: Browse tables discovered through a catalog connection, with filtering and sorting.
+  scope: catalog_connections:read
+- name: list_optimus_recommendations
+  rest: GET /api/v1/optimus/runs/{run_id}/recommendations
+  description: List per-table query-acceleration recommendations from an Optimus run.
+  scope: crunch:read

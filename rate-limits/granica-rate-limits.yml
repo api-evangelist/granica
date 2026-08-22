@@ -1,0 +1,32 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/api-reference
+limit_count: 0
+documented: false
+probed:
+- url: https://docs.granica.ai/api-reference
+  status: 200
+- url: https://docs.granica.ai/llms.txt
+  status: 200
+- url: https://docs.granica.ai/security-and-compliance/api-token
+  status: 200
+limits: []
+response_headers: []
+exhaustion_status_code: not documented
+retry_after: not documented
+note: >-
+  No rate limits are published anywhere in the Granica documentation - not in the API reference, not on the
+  API Keys page, not in the FAQ. No X-RateLimit-*, RateLimit-* or Retry-After header is documented, and no
+  429 behaviour is described. The 422 validation error is the only non-2xx status the reference explains.
+  This is an honest zero, not an omission. It is architecturally plausible that no shared quota exists: the
+  API is served by the customer's own deployed Granica Console, so capacity is the customer's own
+  infrastructure rather than a metered multi-tenant service.
+related_capacity_controls:
+- control: crunch scheduling slots
+  detail: >-
+    GET /api/v1/slots/{run_time_utc} returns slot capacity information for a specific run time (HH:MM). This
+    is job scheduling capacity, not HTTP request rate limiting.
+  source: https://docs.granica.ai/api-reference
+- control: pagination caps
+  detail: 'POST /api/v1/vacuum/hard-delete accepts limit (max records per call) with a default of 500 and a cap of 5000.'
+  source: https://docs.granica.ai/api-reference

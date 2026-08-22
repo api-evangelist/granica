@@ -1,0 +1,70 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/api-reference
+docs:
+- https://docs.granica.ai/api-reference
+- https://docs.granica.ai/security-and-compliance/security-certifications
+- https://docs.granica.ai/faq
+api: Granica APIs V1
+versioning:
+  scheme: uri-path
+  current_version: v1
+  path_prefix: /api/v1
+  published_policy: false
+  note: >-
+    The API reference is titled "Granica APIs V1" and every documented path carries the /api/v1 prefix. No
+    written versioning, support-window or breaking-change policy is published.
+deprecation:
+  policy_published: false
+  sunset_header: not documented
+  deprecation_header: not documented
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy and no RFC 8594 Sunset/Deprecation header usage is documented. No Deprecation
+    pointer is emitted in apis.yml.
+status_page:
+  published: false
+  probed:
+  - url: https://status.granica.ai/
+    status: 0
+    result: DNS does not resolve
+  note: >-
+    No status page. This is architecturally consistent - in the On-Premises and Hybrid deployment models the
+    control plane runs inside the customer's own cloud account, so there is no shared vendor-operated service
+    whose uptime could be published. No StatusPage pointer is emitted in apis.yml.
+sla:
+  published: false
+health:
+  endpoint: GET /api/v1/health
+  description: Health check endpoint. Returns 200 when the API is operational.
+  note: Per-deployment health, reachable only inside the customer's own environment.
+credential_lifecycle:
+  api_key_expiration_days:
+    min: 1
+    max: 365
+    never_expires_allowed: true
+  behavior: Keys automatically become inactive after their expiration date.
+  source: https://docs.granica.ai/security-and-compliance/api-token
+roadmap:
+  page_published: false
+  stated_items:
+  - item: ISO/IEC 27001 certification
+    state: planned
+    source: https://docs.granica.ai/security-and-compliance/security-certifications
+  - item: Runtime Crunch compatibility with Delta Lake and Iceberg Liquid Clustering
+    state: on the roadmap
+    source: https://docs.granica.ai/faq
+  - item: Direct cloud billing integration (AWS CUR / GCP Billing) to replace the heuristic operational-cost setting
+    state: planned
+    source: https://docs.granica.ai/administration/configure-crunch
+  note: >-
+    Roadmap items are stated inline in the docs; there is no roadmap page, so no Roadmap pointer is emitted
+    in apis.yml.
+changelog:
+  published: false
+  probed:
+  - url: https://docs.granica.ai/changelog
+    status: 404
+  - url: https://www.granica.ai/changelog
+    status: 404

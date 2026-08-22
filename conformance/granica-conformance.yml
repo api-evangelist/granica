@@ -1,0 +1,125 @@
+generated: '2026-08-22'
+method: searched
+source: https://docs.granica.ai/security-and-compliance/sso-integration
+docs:
+- https://docs.granica.ai/security-and-compliance/sso-integration
+- https://docs.granica.ai/security-and-compliance/security-certifications
+- https://docs.granica.ai/api-reference
+- https://docs.granica.ai/crunch/compatibility
+api: Granica APIs V1
+standards:
+- id: oidc
+  name: OpenID Connect Core 1.0
+  conforms: true
+  role: relying-party
+  evidence: >-
+    "Granica acts as a confidential OIDC client using the Authorization Code flow. Configuration requires a
+    Discovery URL (.well-known/openid-configuration), a Client ID, and a Client Secret." Supports any
+    OpenID Connect Core 1.0 compliant provider.
+  source: https://docs.granica.ai/security-and-compliance/sso-integration
+  scope: Console SSO for human users; the M2M API uses bearer API keys, not OIDC.
+- id: oauth2
+  name: OAuth 2.0
+  conforms: partial
+  role: client
+  evidence: >-
+    OAuth 2.0 appears only as the substrate of the OIDC Authorization Code flow Granica uses as a client.
+    Granica operates no authorization server and issues no OAuth tokens to API consumers.
+  source: https://docs.granica.ai/security-and-compliance/sso-integration
+- id: saml2
+  name: SAML 2.0
+  conforms: true
+  role: service-provider
+  evidence: >-
+    "Granica acts as a SAML Service Provider (SP)." Publishes SP metadata (Entity ID, ACS URL, SLO URL, SP
+    certificate) by URL or XML; signs outbound requests by default.
+  source: https://docs.granica.ai/security-and-compliance/sso-integration
+- id: scim
+  name: SCIM 2.0
+  conforms: false
+  evidence: >-
+    Explicitly not supported - "users must be pre-provisioned in Granica before they can sign in (SCIM
+    auto-provisioning is not supported)".
+  source: https://docs.granica.ai/security-and-compliance/sso-integration
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: Errors use the FastAPI `detail` JSON envelope, not application/problem+json.
+  source: https://docs.granica.ai/api-reference
+- id: pagination
+  name: Offset/limit pagination
+  conforms: true
+  evidence: Every collection endpoint documents offset and limit query parameters with stated defaults and caps.
+  source: https://docs.granica.ai/api-reference
+- id: idempotency
+  name: Client-supplied idempotency keys
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header. Two operations (enable maintenance, policy upsert) are documented as
+    idempotent by construction; see conventions/granica-conventions.yml.
+  source: https://docs.granica.ai/api-reference
+- id: soc2
+  name: SOC 2 (AICPA Trust Services Criteria)
+  conforms: true
+  evidence: >-
+    "Current: SOC 2 Type 1 Report ... SOC 2 Type 2 Report". Reports are restricted and shared only under NDA
+    via security@granica.ai.
+  source: https://docs.granica.ai/security-and-compliance/security-certifications
+- id: iso27001
+  name: ISO/IEC 27001
+  conforms: false
+  state: planned
+  evidence: Listed under "Planned (Roadmap)" on the security certifications page.
+  source: https://docs.granica.ai/security-and-compliance/security-certifications
+- id: hipaa
+  name: HIPAA
+  conforms: conditional
+  evidence: >-
+    "If a customer's cloud environment is HIPAA compliant and proper controls around data handling, access,
+    and separation are implemented, then using Granica can be part of an overall HIPAA-compliant
+    architecture." Granica does not directly handle PHI; the control plane runs in the customer's VPC.
+  source: https://docs.granica.ai/security-and-compliance/security-certifications
+domain_standards:
+- id: delta-lake
+  name: Delta Lake table format / transaction log
+  declared: true
+  evidence: >-
+    The contract exposes Delta-specific semantics as first-class API surface - POST
+    /api/v1/tables/{table_id}/vacuum "Trigger a vacuum operation on a Delta or Iceberg table" and POST
+    /api/v1/tables/{table_id}/partition-expiration "Trigger partition expiration (DELETE-only) on a Delta
+    table. Files are tombstoned in the table log". TableCreate takes format: "delta".
+  source: https://docs.granica.ai/api-reference
+- id: apache-iceberg
+  name: Apache Iceberg table format
+  declared: true
+  evidence: >-
+    "For Iceberg and Delta Lake tables, Crunch commits optimized files using the table format's native
+    snapshot commit protocol, so concurrent readers always see a consistent snapshot." Vacuum operates on
+    Iceberg snapshots.
+  source: https://docs.granica.ai/faq
+- id: apache-hive
+  name: Apache Hive metastore table format
+  declared: true
+  evidence: '"Granica supports all three major table formats - Hive, Iceberg, and Delta Lake." For Hive tables Crunch performs atomic object replacement.'
+  source: https://docs.granica.ai/faq
+- id: apache-parquet
+  name: Apache Parquet
+  declared: true
+  evidence: >-
+    "Crunch produces standard, format-compliant files. Any tool that reads Parquet today (Spark, Trino,
+    Presto, Athena, BigQuery, Databricks) can read Crunched files without modification." File-level statistics
+    embedded in Parquet footers are preserved.
+  source: https://docs.granica.ai/faq
+- id: unity-catalog
+  name: Databricks Unity Catalog
+  declared: true
+  evidence: >-
+    'POST /api/v1/catalog-connections/{connection_id}/sync ... mode query: full (walk all tables, detect
+    deletions) or incremental (Unity Catalog only).'
+  source: https://docs.granica.ai/api-reference
+note: >-
+  Granica's market - lakehouse storage optimization - has no single cross-vendor API standard, so there is no
+  domain standard to conform to at the protocol level. What the contract DOES declare, and what a buyer
+  actually integrates against, is the open table-format ecosystem: Delta Lake, Apache Iceberg, Hive and
+  Parquet appear as named enum values, path segments and operation semantics inside the API itself rather
+  than as marketing claims. Nothing is asserted here that is not visible in the published reference.

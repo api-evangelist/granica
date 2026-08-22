@@ -1,0 +1,101 @@
+generated: '2026-08-22'
+method: searched
+source: >-
+  https://pypi.org/pypi/granica-sdk/json, https://pypi.org/pypi/bolt-sdk/json,
+  https://search.maven.org/solrsearch/select?q=bolt+projectn,
+  https://api.nuget.org/v3/registration5-semver1/projectn.bolt/index.json,
+  https://proxy.golang.org/github.com/project-n-oss/sidekick/@v/list,
+  https://github.com/granica-ai, https://github.com/project-n-oss
+note: >-
+  Granica Computing, Inc. was formerly Project N, whose product line was called Bolt; the legacy SDKs are
+  published under the project-n-oss GitHub organization and the co.projectn / com.gitlab.projectn-oss Maven
+  groups. The PyPI package granica-sdk self-identifies as "Granica Python SDK" and points its homepage at
+  github.com/project-n-oss/projectn-bolt-python, which is how first-party ownership was established. IMPORTANT
+  CURRENCY FINDING - every first-party package below wraps the legacy Bolt S3 data-access path, not the current
+  Granica APIs V1 REST surface documented at docs.granica.ai/api-reference, and the most recent release of any
+  of them is 2024-06-07 (sidekick). Granica ships NO client SDK for the v1 REST API; the documented integration
+  path is a bearer API key against /api/v1 directly.
+packages:
+- name: granica-sdk
+  language: python
+  registry: pypi
+  url: https://pypi.org/project/granica-sdk/
+  repository: https://github.com/project-n-oss/projectn-bolt-python
+  official: true
+  version: 2.2.0
+  published: '2023-11-03'
+  wraps: Bolt / Granica S3 data access (boto3 drop-in)
+  note: Summary is literally "Granica Python SDK". Does not cover the Granica APIs V1 REST surface.
+- name: bolt-sdk
+  language: python
+  registry: pypi
+  url: https://pypi.org/project/bolt-sdk/
+  repository: https://gitlab.com/projectn-oss/projectn-bolt-python
+  official: true
+  version: 2.1.7
+  published: '2023-03-30'
+  wraps: Bolt S3 data access (boto3 drop-in)
+  note: Pre-rename name for the same library; superseded by granica-sdk.
+- name: co.projectn:bolt-java-sdk
+  language: java
+  registry: maven
+  url: https://central.sonatype.com/artifact/co.projectn/bolt-java-sdk
+  repository: https://github.com/project-n-oss/projectn-bolt-java
+  official: true
+  version: 1.0.2
+  published: '2022-12-07'
+  wraps: Bolt S3 data access (AWS SDK for Java)
+- name: com.gitlab.projectn-oss:projectn-bolt-aws-java
+  language: java
+  registry: maven
+  url: https://central.sonatype.com/artifact/com.gitlab.projectn-oss/projectn-bolt-aws-java
+  repository: https://gitlab.com/projectn-oss/projectn-bolt-java
+  official: true
+  version: 1.0.0
+  published: '2021-07-20'
+  wraps: Bolt S3 data access (AWS SDK for Java)
+- name: ProjectN.Bolt
+  language: dotnet
+  registry: nuget
+  url: https://www.nuget.org/packages/ProjectN.Bolt
+  repository: https://github.com/project-n-oss/bolt-sdk-net
+  official: true
+  version: 1.0.1
+  published: '2022-01-20'
+  wraps: Bolt .NET SDK
+- name: github.com/project-n-oss/sidekick
+  language: go
+  registry: go
+  url: https://pkg.go.dev/github.com/project-n-oss/sidekick
+  repository: https://github.com/project-n-oss/sidekick
+  official: true
+  version: v1.4.0
+  published: '2024-06-07'
+  wraps: Sidecar process that routes application S3 traffic through Bolt/Granica
+- name: github.com/project-n-oss/projectn-bolt-go
+  language: go
+  registry: go
+  url: https://pkg.go.dev/github.com/project-n-oss/projectn-bolt-go
+  repository: https://github.com/project-n-oss/projectn-bolt-go
+  official: true
+  version: v0.0.0-20201222002901-d3141b2d7eb2
+  published: '2020-12-22'
+  wraps: Bolt S3 data access (AWS SDK for Go)
+  note: Untagged pseudo-version only; no semantic release has ever been published.
+absent:
+- registry: npm
+  checked:
+  - granica
+  - '@granica/sdk'
+  - granica-sdk
+  - projectn-bolt-aws-typescript
+  result: 404 on every name; the archived project-n-oss/projectn-bolt-aws-typescript repo was never published to npm.
+  note: >-
+    registry.npmjs.org/bolt-sdk DOES resolve but belongs to magicblock-labs, a different company - excluded
+    under the ownership rule.
+- registry: pypi
+  checked:
+  - granica
+  - granica-ai
+  - granica-client
+  result: 404

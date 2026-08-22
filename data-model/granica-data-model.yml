@@ -1,0 +1,189 @@
+generated: '2026-08-22'
+method: derived
+source: https://docs.granica.ai/api-reference
+note: >-
+  Derived from the published REST API reference path hierarchy and the request-body names it states
+  (TableCreate, TableUpdate, ScheduleCreate, ScheduleUpdate, CrunchTrigger, VacuumTrigger,
+  PartitionExpirationTrigger, PartitionExpirationValidateRequest, RecoverRequest, ConnectionTest,
+  ConnectionCreate, ConnectionUpdate, OptimusRunCreate, OptimusSubmissionUpdate,
+  OptimusRecommendationApplyRequest, LocationCreate, LocationUpdate, PolicyUpsert, ActionRequest,
+  CustomerConfigUpdate). Granica publishes no OpenAPI file on a public host, so no $ref graph was available -
+  relationships below are read from URL nesting and from sentences in the reference, and field-level schemas
+  are deliberately left out rather than guessed.
+api: Granica APIs V1
+entities:
+- name: CustomerConfig
+  singleton: true
+  operations: ['GET /api/v1/config', 'PUT /api/v1/config']
+  fields_documented: false
+- name: Table
+  id_field: table_id
+  operations: ['GET /api/v1/tables', 'POST /api/v1/tables', 'GET /api/v1/tables/{table_id}', 'PUT /api/v1/tables/{table_id}', 'DELETE /api/v1/tables/{table_id}']
+  known_fields: [name, uri, format, priority, target_file_size_mb, onboarding_status]
+  known_values:
+    format: [delta, iceberg, hive]
+    priority: [P1, P2]
+    onboarding_status: [pending, active, failed, retry]
+  note: >-
+    Partition pattern, date filter, cluster and enumerated columns are auto-discovered during onboarding
+    rather than supplied on create. `name` is unique - POST returns 409 on a duplicate.
+- name: Schedule
+  operations: ['POST /api/v1/tables/{table_id}/schedule', 'GET', 'PUT', 'DELETE']
+  known_fields: [schedule_type, lookback_start, lookback_end, run_time_utc, backfill_col, backfill_start_date, backfill_end_date, enabled, job_type]
+  known_values:
+    schedule_type: [daily, backfill]
+    job_type: [crunch, vacuum, partition_expiration]
+- name: InventoryHistoryEntry
+  operations: ['GET /api/v1/tables/{table_id}/inventory-history']
+  note: Append-only audit of inventory_report_uri changes, newest-first; rows survive table deletion.
+- name: OnboardingStatus
+  operations: ['GET /api/v1/onboarding/{table_id}/status', 'POST /api/v1/onboarding/{table_id}/retry']
+- name: Slot
+  id_field: run_time_utc
+  operations: ['GET /api/v1/slots/{run_time_utc}']
+  note: Slot capacity for a specific HH:MM run time.
+- name: CrunchJob
+  id_field: crunch_id
+  operations: ['POST /api/v1/tables/{table_id}/crunch', 'GET /api/v1/tables/{table_id}/crunch', 'GET /api/v1/crunch', 'GET /api/v1/crunch/{crunch_id}/metrics', 'POST /api/v1/crunch/{crunch_id}/cancel']
+  known_fields: [status, job_type, table_id]
+  known_values:
+    job_type: [crunch, optimize]
+  metrics: [DRR (data reduction rate), bytes_before, bytes_after, optimization metrics]
+- name: VacuumJob
+  operations: ['POST /api/v1/tables/{table_id}/vacuum', 'GET /api/v1/tables/{table_id}/vacuum']
+- name: PartitionExpirationJob
+  operations: ['POST /api/v1/tables/{table_id}/partition-expiration', 'GET /api/v1/tables/{table_id}/partition-expiration', 'POST /api/v1/tables/{table_id}/partition-expiration/validate']
+- name: PendingDeletion
+  id_field: deletion_id
+  operations: ['GET /api/v1/pending-deletions', 'GET /api/v1/pending-deletions/stats', 'GET /api/v1/pending-deletions/{deletion_id}', 'POST /api/v1/pending-deletions/{deletion_id}/recover', 'POST /api/v1/vacuum/hard-delete']
+  known_fields: [status, table_id, action_type, vacuum_mode]
+  known_values:
+    status: [PENDING_DELETE]
+- name: CatalogConnection
+  id_field: connection_id
+  operations: ['POST /api/v1/catalog-connections/test', 'POST /api/v1/catalog-connections', 'GET /api/v1/catalog-connections', 'GET /api/v1/catalog-connections/{connection_id}', 'PUT', 'DELETE', 'POST /api/v1/catalog-connections/{connection_id}/sync']
+  known_fields: [is_active]
+- name: Catalog
+  id_field: catalog_name
+  operations: ['GET /api/v1/catalog-connections/{connection_id}/catalogs']
+- name: Schema
+  operations: ['GET /api/v1/catalog-connections/{connection_id}/catalogs/{catalog_name}/schemas']
+- name: CatalogTable
+  id_field: full_name
+  operations: ['GET /api/v1/catalog-connections/{connection_id}/tables', 'GET /api/v1/catalog-connections/{connection_id}/tables/{full_name}']
+  known_fields: [catalog, schema, full_name, format, table_type, size_bytes, has_partitions]
+- name: FeatureFlag
+  id_field: key
+  operations: ['GET /api/v1/feature-flags/{key}']
+  known_fields: [key, enabled]
+  note: 'Returns {"key": key, "enabled": false} when missing - absence means disabled.'
+- name: OptimusSubmission
+  id_field: submission_id
+  operations: ['POST /api/v1/optimus/runs', 'GET /api/v1/optimus/runs/{run_id}', 'PATCH /api/v1/optimus/runs/{run_id}', 'DELETE /api/v1/optimus/runs/{submission_id}', 'POST /api/v1/optimus/runs/{submission_id}/retry', 'POST /api/v1/optimus/runs/{submission_id}/sync-now']
+  known_fields: [name, lookback_days, daily_sync_time_utc, query_logs_uri, active]
+- name: OptimusRun
+  id_field: run_id
+- name: OptimusRecommendation
+  id_field: recommendation_id
+  operations: ['GET /api/v1/optimus/runs/{run_id}/recommendations', 'POST /api/v1/optimus/recommendations/{recommendation_id}/apply', 'GET /api/v1/optimus/runs/{run_id}/tables', 'GET /api/v1/optimus/runs/{run_id}/tables/{table_fqn}/metrics']
+- name: Location
+  id_field: location_id
+  operations: ['POST /api/v1/object-maintenance/locations', 'GET', 'GET/{location_id}', 'PATCH', 'DELETE', 'POST /api/v1/object-maintenance/locations/{location_id}/discover']
+  note: Object-store prefix registration for S3, GCS or Azure.
+- name: Prefix
+  id_field: prefix_id
+  operations: ['GET /api/v1/object-maintenance/prefixes', 'GET /api/v1/object-maintenance/prefixes/{prefix_id}', 'GET .../locations/{location_id}/discovered-prefixes', 'GET .../locations/{location_id}/managed-prefixes', 'POST .../locations/{location_id}/prefixes/{prefix_id}/enable']
+  known_fields: [management_state, source_state, location_id]
+  known_values:
+    management_state: [unmanaged, active, paused, error]
+    source_state: [present, missing]
+- name: PrefixPolicy
+  operations: ['GET /api/v1/object-maintenance/prefixes/{prefix_id}/policy', 'PUT', 'DELETE', 'GET .../policy/versions']
+- name: PrefixPolicyVersion
+  operations: ['GET /api/v1/object-maintenance/prefixes/{prefix_id}/policy/versions']
+- name: PrefixAction
+  operations: ['POST /api/v1/object-maintenance/prefixes/{prefix_id}/actions', 'GET .../actions']
+- name: PrefixRun
+  operations: ['GET /api/v1/object-maintenance/prefixes/{prefix_id}/runs']
+  note: Unified view of crunch jobs and maintenance jobs for a prefix.
+- name: DiscoverySchedule
+  id_field: schedule_id
+  operations: ['GET .../locations/{location_id}/discovery/schedules', 'GET .../discovery/schedules/{schedule_id}', 'GET .../state', 'GET .../plan', 'GET .../effective-config', 'POST .../pause', 'POST .../resume', 'POST .../restart', 'POST .../complete', 'POST .../skip-bin/{bin_id}']
+relationships:
+- from: Table
+  to: Schedule
+  type: has_one
+  via: /tables/{table_id}/schedule
+- from: Table
+  to: CrunchJob
+  type: has_many
+  via: /tables/{table_id}/crunch (also CrunchJob.table_id)
+- from: Table
+  to: VacuumJob
+  type: has_many
+  via: /tables/{table_id}/vacuum
+- from: Table
+  to: PartitionExpirationJob
+  type: has_many
+  via: /tables/{table_id}/partition-expiration
+- from: Table
+  to: InventoryHistoryEntry
+  type: has_many
+  via: /tables/{table_id}/inventory-history
+- from: Table
+  to: OnboardingStatus
+  type: has_one
+  via: /onboarding/{table_id}/status
+- from: PendingDeletion
+  to: Table
+  type: belongs_to
+  via: table_id
+- from: CatalogConnection
+  to: Catalog
+  type: has_many
+  via: /catalog-connections/{connection_id}/catalogs
+- from: Catalog
+  to: Schema
+  type: has_many
+  via: /catalog-connections/{connection_id}/catalogs/{catalog_name}/schemas
+- from: CatalogConnection
+  to: CatalogTable
+  type: has_many
+  via: /catalog-connections/{connection_id}/tables
+- from: OptimusSubmission
+  to: OptimusRun
+  type: has_many
+  via: submission dispatch metadata and latest-run summary
+- from: OptimusRun
+  to: OptimusRecommendation
+  type: has_many
+  via: /optimus/runs/{run_id}/recommendations
+- from: OptimusRecommendation
+  to: CatalogTable
+  type: belongs_to
+  via: table_fqn
+- from: Location
+  to: Prefix
+  type: has_many
+  via: /object-maintenance/locations/{location_id}/managed-prefixes (Prefix.location_id, nullable after location delete)
+- from: Prefix
+  to: PrefixPolicy
+  type: has_one
+  via: /object-maintenance/prefixes/{prefix_id}/policy
+- from: PrefixPolicy
+  to: PrefixPolicyVersion
+  type: has_many
+  via: /policy/versions
+- from: Prefix
+  to: PrefixAction
+  type: has_many
+  via: /object-maintenance/prefixes/{prefix_id}/actions
+- from: Prefix
+  to: PrefixRun
+  type: has_many
+  via: /object-maintenance/prefixes/{prefix_id}/runs
+- from: Location
+  to: DiscoverySchedule
+  type: has_many
+  via: /object-maintenance/locations/{location_id}/discovery/schedules
+entity_count: 25
