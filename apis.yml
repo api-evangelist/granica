@@ -52,7 +52,7 @@ tags:
 - Storage
 - Analytics
 - Artificial Intelligence
-- Machine-Learning
+- Machine Learning
 - Data Lakehouse
 - Cloud Cost Optimization
 - Compression
@@ -68,6 +68,7 @@ tags_raw:
 - Cloud Cost Optimization
 - Compression
 - Data Infrastructure
+- Machine-Learning
 apis:
 - name: Granica APIs V1
   description: >-
