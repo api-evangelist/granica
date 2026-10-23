@@ -1,0 +1,29 @@
+generated: '2026-10-23'
+method: searched
+checked:
+- hugging-face/integrations/hugging-face-integration-edges.yml
+source:
+- hugging-face/integrations/hugging-face-integration-edges.yml
+edges:
+- partner_name: Hugging Face (hugging-face-hub)
+  partner: hugging-face
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: hugging-face-hub
+  evidence: https://huggingface.co/Granica
+  mirror_of: hugging-face/integrations/hugging-face-integration-edges.yml
+  apps:
+  - Granica/2bbfaa9b7c2f9f5c9122fdd91d42760f
+  - Granica/721b95fbf1bf29dc7c3784572fbda317
+  - Granica/Llama-Guard-3-8B-Aegis-merged
+  - Granica/Llama-Guard-3-8B-Aegis-continued-Hawkeye-binary-thresh_1-merged
+  listing_count: 1
+  detected: '2026-10-23'
+  detected_by: mirror-platform-listings.py
+  category: Hugging Face Hub models
+  badges:
+  - Verified publisher (Hugging Face verified organisation)
