@@ -64,5 +64,116 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Granica is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.hiive.com/securities/granica-stock
+Granica Computing, Inc. builds an efficiency and data-readiness layer for enterprise AI. Its flagship product, Granica Crunch, is a continuous, policy-driven data lakehouse optimization platform that handles compaction, compression, sorting, clustering, deduplication, vacuuming, partition lifecycle management and query acceleration for Delta Lake, Apache Iceberg and Hive tables sitting in Amazon S3, Google Cloud Storage and Azure. The platform is delivered as a customer-deployed control plane plus data plane (Granica Hosted, On-Premises and Hybrid deployment models on EKS or GKE inside the customer cloud account), so table data never has to leave the customer environment. Granica publishes a public REST API reference — the Granica APIs V1 surface at base path /api/v1 — covering tables, schedules, onboarding, crunch, vacuum, partition expiration, pending deletions, catalog connections, feature flags, Optimus query optimization and object maintenance, authenticated with long-lived bearer API keys carrying explicit read/write scopes. The company was formerly known as Project N (the Bolt product line), and still maintains the legacy Bolt SDKs under the project-n-oss GitHub organization.
+
+**Areas:** Company · Data · Storage · Analytics · Artificial Intelligence · Machine Learning · Data Lakehouse · Cloud Cost Optimization · Compression · Data Infrastructure
+
+## Granica on APIs.io
+
+Everything profiled for Granica is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/granica/](https://apis.io/providers/granica/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Granica APIs V1](https://apis.io/apis/granica/granica-apis-v1/) — The Granica REST API (v1) lets you programmatically manage all aspects of the Granica platform, including table onboarding, compaction scheduling, catalog…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [granica-mcp.yml](https://apis.io/servers/granica/granica-mcp-yml/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Granica Authentication](https://apis.io/security/granica/granica-authentication/)
+- [Granica Domain Security](https://apis.io/security/granica/granica-domain-security/)
+- [Granica Trust Center](https://apis.io/security/granica/granica-trust-center/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Granica Scopes](https://apis.io/scopes/granica/granica-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Granica Plans Pricing](https://apis.io/plans/granica/granica-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Granica Rate Limits](https://apis.io/rate-limits/granica/granica-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.granica.ai/)
+- [Documentation](https://docs.granica.ai/)
+- [Getting started](https://docs.granica.ai/getting-started/get-started)
+- [API reference](https://docs.granica.ai/api-reference)
+- [Blog](https://www.granica.ai/blog)
+- [Terms of service](https://www.granica.ai/terms-of-service)
+- [Privacy policy](https://www.granica.ai/privacy-policy)
+- [GitHub](https://github.com/granica-ai)
+
+## API Evangelist rating
+
+**Kin Score 32.3** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 2.6 |
+| Developer ergonomics | 59.5 |
+| Access clarity | 36.8 |
+
+**Agent readiness 7.9** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 36.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/granica/](https://apis.io/providers/granica/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Granica: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/granica/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
